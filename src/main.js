@@ -3,10 +3,18 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { MTLLoader } from 'three/examples/jsm/Addons.js'
 import { OBJLoader } from 'three/examples/jsm/Addons.js'
 import PLANETS from "./planets"
+import planetInfo from "./planetInfo"
 
 const scene = new THREE.Scene()
 
 scene.background = new THREE.Color(0x000000);
+
+// create planet track around the sun
+// const mercuryRingGeo = new THREE.TorusGeometry(3, 0.01, 128, 128);
+// const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.1})
+// const mercuryRing = new THREE.Mesh(mercuryRingGeo, ring);
+// mercuryRing.rotateX(Math.PI / 2);
+// scene.add(mercuryRing);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.z = 5
@@ -41,12 +49,7 @@ for (const planet of PLANETS) {
       })
 
       object.position.x = planet.distance
-
-      if (planet.resizeScale) {
-        object.scale.setScalar(planet.resizeScale)
-      } else {
-        object.scale.setScalar(planet.scale)
-      }
+      object.scale.setScalar(planet.scale)
 
       object.name = planet.name
       scene.add(object)
@@ -73,14 +76,47 @@ for (const planet of PLANETS) {
           isAnimating = true;
           animationStartTime = clock.getElapsedTime();
           initialCameraPosition.copy(camera.position);
-          targetCameraPosition.copy(object.position).add(new THREE.Vector3(0, 0, 4));
+          // targetCameraPosition.copy(object.position).add(new THREE.Vector3(0.5 * object.scale.x, 0, 4));
+          targetCameraPosition.copy(object.position).add(new THREE.Vector3(0, 0, planet.zVector));
           initialControlsTarget.copy(controls.target);
           targetControlsTarget.copy(object.position);
+          
+          planetInfo(planet)
+          document.getElementById("planet-info").hidden = false
         }
       })
     })
   })
 }
+
+
+const div = document.createElement("div")
+div.id = "planet-info"
+
+const btnClose = document.createElement("button")
+btnClose.type = "button"
+btnClose.innerText = "X"
+btnClose.id = "close-planet-info"
+
+btnClose.addEventListener("click", (e) => {
+    const ele = document.getElementById("planet-info")
+    ele.hidden = true
+})
+
+
+const planetName = document.createElement("h1")
+planetName.id = "planet-info-name"
+planetName.innerText = "Sun"
+
+const div1 = document.createElement("div")
+div1.id = "topper"
+div1.appendChild(planetName)
+div1.appendChild(btnClose)
+
+div.appendChild(div1)
+
+document.body.prepend(div)
+
 
 
 
@@ -91,7 +127,7 @@ scene.add(ambientLight)
 const pointLight = new THREE.PointLight(0xffff00, 10)
 pointLight.position.set(0, 0, 0)
 
-
+// Star Background
 const starGeometry = new THREE.BufferGeometry();
 const starCount = 5000;
 const positions = new Float32Array(starCount * 3); // 3 coordinates per star
@@ -121,7 +157,7 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio(window.devicePixelRatio, 2)
 
 const controls = new OrbitControls(camera, canvas)
-controls.enablePan = true
+controls.enableDamping = true
 
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight
@@ -151,8 +187,8 @@ const renderLoop = () => {
 
   planetObjects.forEach((planet, index) => {
       planet.rotation.y += PLANETS[index].speed
-      // planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
-      // planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
+      planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
+      planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
   })
 
   controls.update()
