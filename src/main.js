@@ -31,6 +31,10 @@ let targetCameraPosition = new THREE.Vector3();
 let initialControlsTarget = new THREE.Vector3();
 let targetControlsTarget = new THREE.Vector3();
 
+// let selectedPlanet = null;
+// let isFollowing = false;
+
+
 
 const planetObjects = []
 for (const planet of PLANETS) {
@@ -69,6 +73,10 @@ for (const planet of PLANETS) {
   
         const intersects = raycaster.intersectObject(object, true)
         if (intersects.length > 0) {
+          console.log(intersects[0].object.id);
+          // selectedPlanet = intersects[0].object;
+          // isFollowing = true;
+
           // console.log(object.name)
           // camera.lookAt(object.position)
           // camera.position = object.position
@@ -82,7 +90,10 @@ for (const planet of PLANETS) {
           targetControlsTarget.copy(object.position);
           
           planetInfo(planet)
-          document.getElementById("planet-info").hidden = false
+          // document.getElementById("close-planet-card").hidden = false
+          document.getElementById("close-planet-card").style.display = "flex"
+          document.getElementById("planet-card-left").hidden = false
+          document.getElementById("planet-card-right").hidden = false
         }
       })
     })
@@ -90,35 +101,70 @@ for (const planet of PLANETS) {
 }
 
 
-const div = document.createElement("div")
-div.id = "planet-info"
+{
+  const cardLeft = document.createElement("div")
+  cardLeft.id = "planet-card-left"
+  cardLeft.classList.add("planet-card", "card-left")
 
-const btnClose = document.createElement("button")
-btnClose.type = "button"
-btnClose.innerText = "X"
-btnClose.id = "close-planet-info"
+  const cardRight = document.createElement("div")
+  cardRight.id = "planet-card-right"
+  cardRight.classList.add("planet-card", "card-right")
 
-btnClose.addEventListener("click", (e) => {
-    const ele = document.getElementById("planet-info")
-    ele.hidden = true
-})
+  const cardRightImage = document.createElement("img")
+  cardRightImage.id = "planet-card-right-image"
+  cardRightImage.src = "./Sun-image.png"
+  cardRight.appendChild(cardRightImage)
 
+  const cardRightVideo = document.createElement("video")
+  cardRightVideo.id = "planet-card-right-video"
+  // cardRightVideo.width = "350"
+  // cardRightVideo.height = "240"
+  cardRightVideo.controls = true
+  cardRightVideo.autoplay = true
+  const cardRightVideoSource = document.createElement("source")
+  cardRightVideoSource.src = "./Sun-video.mp4"
+  cardRightVideoSource.type = "video/mp4"
+  cardRightVideo.appendChild(cardRightVideoSource)
+  cardRight.appendChild(cardRightVideo)
+  
+  const btnClose = document.createElement("button")
+  btnClose.type = "button"
+  const btnCloseIcon = document.createElement("img")
+  btnCloseIcon.src = "./icons8-left-arrow-50.png"
+  btnCloseIcon.height = 20
+  btnCloseIcon.width = 20
+  btnClose.appendChild(btnCloseIcon)
+  btnClose.id = "close-planet-card"
+  
+  btnClose.addEventListener("click", (e) => {
+      const ele = document.getElementsByClassName("planet-card")
+      for (const elem of ele) {
+        elem.hidden = true
+      }
+      document.getElementById("planet-card-right-video").pause()
+      btnClose.style.display = "none"
+  })
+  
+  
+  const planetName = document.createElement("h1")
+  planetName.id = "planet-card-left-header"
+  planetName.innerText = "Sun"
 
-const planetName = document.createElement("h1")
-planetName.id = "planet-info-name"
-planetName.innerText = "Sun"
-
-const div1 = document.createElement("div")
-div1.id = "topper"
-div1.appendChild(planetName)
-div1.appendChild(btnClose)
-
-div.appendChild(div1)
-
-document.body.prepend(div)
-
-
-
+  const planetDesc = document.createElement("p")
+  planetDesc.id = "planet-card-left-desc"
+  planetDesc.innerText = "The center of the solar system. It is a star that provides light and energy to all the planets"
+  
+  cardLeft.appendChild(planetName)
+  cardLeft.appendChild(document.createElement("hr"))
+  cardLeft.appendChild(planetDesc)
+  
+  cardRight.hidden = true
+  cardLeft.hidden = true
+  btnClose.style.display = "none"
+  document.body.prepend(cardRight)
+  document.body.prepend(cardLeft)
+  document.body.prepend(btnClose)
+}
 
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 5)
@@ -158,6 +204,7 @@ renderer.setPixelRatio(window.devicePixelRatio, 2)
 
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+controls.maxDistance = 30
 
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight
@@ -185,10 +232,21 @@ const renderLoop = () => {
     }
   }
 
+  // if (isFollowing && selectedPlanet) {
+  //   // Make the camera follow the selected planet
+  //   const offset = new THREE.Vector3(0, 2, 5); // Adjust for a better viewing angle
+  //   const planetPosition = new THREE.Vector3();
+  //   selectedPlanet.getWorldPosition(planetPosition);
+
+  //   camera.position.copy(planetPosition).add(offset);
+  //   controls.target.copy(planetPosition);
+  // }
+
+
   planetObjects.forEach((planet, index) => {
       planet.rotation.y += PLANETS[index].speed
-      planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
-      planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
+      // planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
+      // planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
   })
 
   controls.update()
