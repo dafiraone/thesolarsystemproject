@@ -4,17 +4,12 @@ import { MTLLoader } from 'three/examples/jsm/Addons.js'
 import { OBJLoader } from 'three/examples/jsm/Addons.js'
 import PLANETS from "./planets"
 import planetInfo from "./planetInfo"
+import Card from "./card"
+// import splashScreen from './splashScreen'
 
 const scene = new THREE.Scene()
 
 scene.background = new THREE.Color(0x000000);
-
-// create planet track around the sun
-// const mercuryRingGeo = new THREE.TorusGeometry(3, 0.01, 128, 128);
-// const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.1})
-// const mercuryRing = new THREE.Mesh(mercuryRingGeo, ring);
-// mercuryRing.rotateX(Math.PI / 2);
-// scene.add(mercuryRing);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.z = 5
@@ -31,10 +26,26 @@ let targetCameraPosition = new THREE.Vector3();
 let initialControlsTarget = new THREE.Vector3();
 let targetControlsTarget = new THREE.Vector3();
 
+
 // let selectedPlanet = null;
 // let isFollowing = false;
 
+const listener = new THREE.AudioListener();
+camera.add(listener);
 
+// create a global audio source
+const sound = new THREE.Audio(listener);
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load("./planet_sound_asset.ogg", function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+});
+
+
+// const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.1})
 
 const planetObjects = []
 for (const planet of PLANETS) {
@@ -63,6 +74,11 @@ for (const planet of PLANETS) {
 
       planetObjects.push(object)
 
+      // const planetRingGeo = new THREE.TorusGeometry(planet.distance, 0.01, 128, 128);
+      // const planetRing = new THREE.Mesh(planetRingGeo, ring);
+      // planetRing.rotateX(Math.PI / 2);
+      // scene.add(planetRing);
+
 
       window.addEventListener('click', (e) => {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1
@@ -73,7 +89,7 @@ for (const planet of PLANETS) {
   
         const intersects = raycaster.intersectObject(object, true)
         if (intersects.length > 0) {
-          console.log(intersects[0].object.id);
+          // console.log(intersects[0].object.id);
           // selectedPlanet = intersects[0].object;
           // isFollowing = true;
 
@@ -85,11 +101,16 @@ for (const planet of PLANETS) {
           animationStartTime = clock.getElapsedTime();
           initialCameraPosition.copy(camera.position);
           // targetCameraPosition.copy(object.position).add(new THREE.Vector3(0.5 * object.scale.x, 0, 4));
-          targetCameraPosition.copy(object.position).add(new THREE.Vector3(0, 0, planet.zVector));
+          // targetCameraPosition.copy(object.position).add(new THREE.Vector3(0, 0, planet.zVector));
+          targetCameraPosition.copy(object.position).add(new THREE.Vector3(0, 0, 4));
           initialControlsTarget.copy(controls.target);
           targetControlsTarget.copy(object.position);
           
           planetInfo(planet)
+          // document.getElementById("close-planet-card").hidden = false
+          document.getElementById("close-planet-card").style.display = "flex"
+          document.getElementById("planet-card-left").hidden = false
+          document.getElementById("planet-card-right").hidden = false
           // document.getElementById("close-planet-card").hidden = false
           document.getElementById("close-planet-card").style.display = "flex"
           document.getElementById("planet-card-left").hidden = false
@@ -100,71 +121,7 @@ for (const planet of PLANETS) {
   })
 }
 
-
-{
-  const cardLeft = document.createElement("div")
-  cardLeft.id = "planet-card-left"
-  cardLeft.classList.add("planet-card", "card-left")
-
-  const cardRight = document.createElement("div")
-  cardRight.id = "planet-card-right"
-  cardRight.classList.add("planet-card", "card-right")
-
-  const cardRightImage = document.createElement("img")
-  cardRightImage.id = "planet-card-right-image"
-  cardRightImage.src = "./Sun-image.png"
-  cardRight.appendChild(cardRightImage)
-
-  const cardRightVideo = document.createElement("video")
-  cardRightVideo.id = "planet-card-right-video"
-  // cardRightVideo.width = "350"
-  // cardRightVideo.height = "240"
-  cardRightVideo.controls = true
-  cardRightVideo.autoplay = true
-  const cardRightVideoSource = document.createElement("source")
-  cardRightVideoSource.src = "./Sun-video.mp4"
-  cardRightVideoSource.type = "video/mp4"
-  cardRightVideo.appendChild(cardRightVideoSource)
-  cardRight.appendChild(cardRightVideo)
-  
-  const btnClose = document.createElement("button")
-  btnClose.type = "button"
-  const btnCloseIcon = document.createElement("img")
-  btnCloseIcon.src = "./icons8-left-arrow-50.png"
-  btnCloseIcon.height = 20
-  btnCloseIcon.width = 20
-  btnClose.appendChild(btnCloseIcon)
-  btnClose.id = "close-planet-card"
-  
-  btnClose.addEventListener("click", (e) => {
-      const ele = document.getElementsByClassName("planet-card")
-      for (const elem of ele) {
-        elem.hidden = true
-      }
-      document.getElementById("planet-card-right-video").pause()
-      btnClose.style.display = "none"
-  })
-  
-  
-  const planetName = document.createElement("h1")
-  planetName.id = "planet-card-left-header"
-  planetName.innerText = "Sun"
-
-  const planetDesc = document.createElement("p")
-  planetDesc.id = "planet-card-left-desc"
-  planetDesc.innerText = "The center of the solar system. It is a star that provides light and energy to all the planets"
-  
-  cardLeft.appendChild(planetName)
-  cardLeft.appendChild(document.createElement("hr"))
-  cardLeft.appendChild(planetDesc)
-  
-  cardRight.hidden = true
-  cardLeft.hidden = true
-  btnClose.style.display = "none"
-  document.body.prepend(cardRight)
-  document.body.prepend(cardLeft)
-  document.body.prepend(btnClose)
-}
+Card()
 
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 5)
@@ -204,13 +161,69 @@ renderer.setPixelRatio(window.devicePixelRatio, 2)
 
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.maxDistance = 30
+// controls.maxDistance = 30
+controls.maxDistance = 100
 
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
 })
+
+const splashScreen = document.createElement("div")
+splashScreen.id = "splash-screen"
+
+const introText = document.createElement("h1");
+introText.innerText = "The Solar System"
+introText.id = "intro-text"
+splashScreen.append(introText)
+
+const introText2 = document.createElement("p");
+introText2.innerText = "Click to continue"
+introText2.id = "intro-text2"
+splashScreen.append(introText2)
+
+camera.position.set(0, 0, 100);
+
+
+splashScreen.addEventListener("click", () => {
+    const audioContext = THREE.AudioContext.getContext();
+    if (audioContext.state === "suspended") {
+      audioContext.resume().then(() => {
+        console.log("AudioContext resumed");
+      });
+    }
+    // Start animation to move camera closer to the scene
+    isAnimating = true;
+    animationStartTime = clock.getElapsedTime();
+    initialCameraPosition.copy(camera.position);
+    targetCameraPosition.set(0, 0, 5); // Closer to planets
+    initialControlsTarget.copy(controls.target);
+    targetControlsTarget.set(0, 0, 0); // Center of the scene
+  
+    sound.play();
+  
+    // Trigger fade out and remove intro overlay after animation
+    splashScreen.style.animation = "fadeOut 1.5s ease-out";
+    setTimeout(() => {
+      splashScreen.style.display = "none";
+    }, 1500);
+  });
+
+document.body.prepend(splashScreen)
+
+// window.addEventListener("keydown", (event) => {
+//   if (event.key === "z") {
+//     isAnimating = true;
+//     animationStartTime = clock.getElapsedTime();
+//     initialCameraPosition.copy(camera.position);
+//     targetCameraPosition.set(0, 0, 100);
+//     initialControlsTarget.copy(controls.target);
+//     targetControlsTarget.set(0, 0, 0); 
+//   }
+// });
+
+
 
 const renderLoop = () => {
   if (isAnimating) {
@@ -243,8 +256,21 @@ const renderLoop = () => {
   // }
 
 
+  // if (isFollowing && selectedPlanet) {
+  //   // Make the camera follow the selected planet
+  //   const offset = new THREE.Vector3(0, 2, 5); // Adjust for a better viewing angle
+  //   const planetPosition = new THREE.Vector3();
+  //   selectedPlanet.getWorldPosition(planetPosition);
+
+  //   camera.position.copy(planetPosition).add(offset);
+  //   controls.target.copy(planetPosition);
+  // }
+
+
   planetObjects.forEach((planet, index) => {
       planet.rotation.y += PLANETS[index].speed
+      // planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
+      // planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
       // planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
       // planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
   })

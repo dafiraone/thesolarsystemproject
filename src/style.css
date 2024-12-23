@@ -1,4 +1,5 @@
 
+
 * {
   /* outline: 1px solid red; */
 }
@@ -8,6 +9,39 @@ body {
   overflow: hidden;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+@font-face {
+  font-family: JetBrainsMono-Regular;
+  src: url("./JetBrainsMono-Regular.ttf");
+}
+#splash-screen {
+  font-family: JetBrainsMono-Regular;
+  position: fixed;
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  transition: opacity 2s ease;
+}
+
+#intro-text {
+  animation: zoomIn 2s ease-out forwards;
+}
+
+#intro-text2 {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  opacity: 0;
+  animation: fadeIn 2s 1s ease-out forwards;
+}
+
 
 .planet-card {
   color: white;
@@ -22,9 +56,13 @@ body {
   overflow: auto;
   /* text-align: justify; */
   text-justify: inter-word;
+  padding: 0 10px;
+  overflow: auto;
+  /* text-align: justify; */
+  text-justify: inter-word;
 
   /* From https://css.glass */
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
@@ -40,11 +78,17 @@ body {
   padding: 0 0 0 15px;
 }
 
+#planet-card-left-desc {
+  font-style: italic;
+  font-weight: 900;
+}
+
 .card-right {
   right: 10px;
 }
 
 #planet-card-right-image {
+  margin-top: 10px;
   width: 100%;
   height: 40%;
   object-fit: cover;
@@ -64,6 +108,11 @@ body {
 
   
 
+  justify-content: center;
+  align-items: center;
+
+  
+
   /* From https://css.glass */
   width: 40px;
   height: 40px;
@@ -72,4 +121,18 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 1);
   transform: translate(10px, -10px);
+}
+
+
+@keyframes zoomIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
