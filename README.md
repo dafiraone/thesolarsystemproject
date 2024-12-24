@@ -31,5 +31,7 @@ Run thesolarsystemproject web
 
 
 ## Panel Penyesuaian
-
 Gunakan Shift + T untuk membuka panel penyesuaian
+
+## Tutup Info Planet
+Gunakan Escape unuk menutup info planet
