@@ -11,6 +11,7 @@ Proyek Tugas Teknik Multimedia Kelompok 10
 - Katon
 - Bagus
 - Agiel
+- Raihan
 - Rohman
 
 
