@@ -1,7 +1,7 @@
 
 # The Solar System Project
 
-Proyek Tugas Teknik Multimedia Kelompok 10
+Proyek Tugas Teknik Multimedia Kelompok 5
 
 
 ## Anggota
