@@ -1,6 +1,6 @@
 # The Solar System Project
 
-Proyek Tugas Teknik Multimedia Kelompok 10
+Proyek Tugas Teknik Multimedia Kelompok 5
 
 ## Anggota
 
@@ -27,5 +27,7 @@ Run thesolarsystemproject web
 ```
 
 ## Panel Penyesuaian
-
 Gunakan Shift + T untuk membuka panel penyesuaian
+
+## Tutup Info Planet
+Gunakan Escape unuk menutup info planet
