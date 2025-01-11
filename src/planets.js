@@ -49,7 +49,7 @@ export default [
         distance: 12,
         // scale: 0.2,
         scale: 1,
-        speed: 0.0020,
+        speed: 0.002,
         zVector: 3,
         information: {
             description: "Known as Earth's twin. It has a thick atmosphere and surface temperatures high enough to melt lead",
@@ -73,7 +73,7 @@ export default [
         distance: 18,
         // scale: 0.3,
         scale: 1,
-        speed: 0.001,
+        speed: 0.0025,
         zVector: 3,
         information: {
             description: "The only planet known to support life. It has a breathable atmosphere and abundant water",
@@ -96,7 +96,7 @@ export default [
         distance: 24,
         // scale: 0.4,
         scale: 1,
-        speed: 0.001,
+        speed: 0.003,
         zVector: 3,
         information: {
             description: "Known as the Red Planet due to its reddish appearance. It has a thin atmosphere and ice caps",
@@ -119,7 +119,7 @@ export default [
         distance: 30,
         // scale: 0.5,
         scale: 1,
-        speed: 0.001,
+        speed: 0.0035,
         zVector: 3,
         information: {
             description: "The largest planet in the solar system. It has a stormy atmosphere, including the Great Red Spot",
@@ -142,7 +142,7 @@ export default [
         distance: 36,
         // scale: 0.6,
         scale: 1,
-        speed: 0.001,
+        speed: 0.004,
         zVector: 4,
         information: {
             description: "Known for its beautiful ring system, Saturn is a gas giant with dozens of moons",
@@ -165,7 +165,7 @@ export default [
         distance: 42,
         // scale: 0.7,
         scale: 1,
-        speed: 0.001,
+        speed: 0.0045,
         zVector: 4,
         information: {
             description: "A gas giant with a tilted rotation axis, giving it unique seasons and weather patterns",

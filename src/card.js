@@ -59,9 +59,15 @@ export default () => {
     cardLeft.append(planetDesc)
     cardLeft.append(planetFactDiv)
 
+    const tutorialButton = document.createElement("button")
+    tutorialButton.type = "button"
+    tutorialButton.id = "tutorial-button"
+    tutorialButton.innerText = "Show Tutorial"
+    
     cardRight.hidden = true
     cardLeft.hidden = true
     btnClose.style.display = "none"
+    document.body.prepend(tutorialButton)
     document.body.prepend(cardRight)
     document.body.prepend(cardLeft)
     document.body.prepend(btnClose)
@@ -71,6 +77,42 @@ export default () => {
         document.getElementById("close-planet-card").style.display = "none"
         document.getElementById("planet-card-left").hidden = true
         document.getElementById("planet-card-right").hidden = true
+        }
+    })
+
+    tutorialButton.addEventListener("click", () => {
+        btnClose.style.display = "none"
+        cardRight.hidden = true
+
+        planetName.innerText = "Tutorial"
+        planetDesc.innerText = "How to use Solar System Website"
+        const planetLeftTutorial = document.getElementById("planet-card-left-fact")
+
+        planetLeftTutorial.innerHTML = ""
+
+        const tutorials = ["Orbitting: Click + Drag Mouse@orbit", "Panning: Shift + Click + Drag Mouse@panning", "Zoom: Use Scroll or Pinch & Spread@zoom", "Show Info: Click Object@showinfo", "Hide Info: Press Escape or Click Back Button on top left@hideinfo", "Show Tweaks: Shift + T@showtweaks"]
+
+        tutorials.forEach(tut => {
+            const tuts = tut.split("@")
+            console.log(tuts)
+            const tutorialTitle = document.createElement("p")
+            tutorialTitle.innerText = tuts[0]
+            planetLeftTutorial.append(tutorialTitle)
+            
+            const tutorialGif = document.createElement("img")
+            tutorialGif.className = "tutorial-gif"
+            tutorialGif.src = `./tutorial-${tuts[1]}.gif`
+            planetLeftTutorial.append(tutorialGif)
+        })
+        
+
+        cardLeft.toggleAttribute("hidden")
+        tutorialButton.innerText = cardLeft.hidden ? "Show Tutorial" : "Hide Tutorial"
+    })
+
+    document.body.addEventListener("keydown", e => {
+        if (e.key === "t") {
+            tutorialButton.click()
         }
     })
 }

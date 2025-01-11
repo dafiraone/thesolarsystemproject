@@ -10,7 +10,6 @@ import Card from "./card"
 const pane = new Pane()
 const paneElement = pane.element
 paneElement.style.display = "none"
-let openPane = true
 
 const scene = new THREE.Scene()
 scene.background = new THREE.Color(0x000000)
@@ -30,6 +29,8 @@ const pointLightPane = pane.addFolder({
   title: "Point Light",
   expanded: true
 })
+
+const orbitalRing = { visible: false, orbitting: false };
 
 const pointLight = new THREE.PointLight(0xffff00, 0)
 pointLight.position.set(0, 0, 0)
@@ -51,6 +52,7 @@ let initialCameraPosition = new THREE.Vector3()
 let targetCameraPosition = new THREE.Vector3()
 let initialControlsTarget = new THREE.Vector3()
 let targetControlsTarget = new THREE.Vector3()
+
 
 // Splash Screen
 const splashScreen = document.createElement("div")
@@ -111,7 +113,7 @@ audioLoader.load("./planet_sound_asset.ogg", function (buffer) {
   sound.setVolume(0.5)
 })
 
-const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.1})
+const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.5})
 
 const planetObjects = []
 const orbitRings = []
@@ -170,6 +172,9 @@ for (const planet of PLANETS) {
           // targetCameraPosition.copy(object.position).add(new THREE.Vector3(0, 0, 5))
           initialControlsTarget.copy(controls.target)
           targetControlsTarget.copy(object.position)
+
+          orbitalRing.orbitting = false
+          pane.refresh();
           
           planetInfo(planet)
           // document.getElementById("close-planet-card").hidden = false
@@ -185,15 +190,24 @@ for (const planet of PLANETS) {
 const orbitRingsPane = pane.addFolder({
   title: "Orbit Rings",
   expanded: true,
-});
+})
 
-const ringVisibility = { visible: false };
 
-orbitRingsPane.addBinding(ringVisibility, "visible").on("change", (event) => {
+orbitRingsPane.addBinding(orbitalRing, "visible").on("change", (event) => {
   orbitRings.forEach((ring) => {
-    ring.visible = event.value;
-  });
-});
+    ring.visible = event.value
+  })
+})
+
+orbitRingsPane.addBinding(ring, "opacity", { min: 0.1, max: 1, step: 0.1 }).on("change", (event) => {
+  orbitRings.forEach((ring) => {
+    ring.material.opacity = event.value
+  })
+})
+
+orbitRingsPane.addBinding(orbitalRing, "orbitting").on("change", (event) => {
+    ring.visible != orbitalRing.orbitting
+})
 
 
 Card()
@@ -238,6 +252,7 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
+// === ONLY FOR TRAILER ===
 // window.addEventListener("keydown", (event) => {
 //   if (event.key === "z") {
 //     isAnimating = true
@@ -267,7 +282,6 @@ document.addEventListener('keyup', () => {
 });
 
 
-
 const renderLoop = () => {
   if (isAnimating) {
     const elapsedTime = clock.getElapsedTime() - animationStartTime
@@ -284,21 +298,15 @@ const renderLoop = () => {
       isAnimating = false
     }
   }
-
-  // if (isFollowing && selectedPlanet) {
-  //   // Make the camera follow the selected planet
-  //   const offset = new THREE.Vector3(0, 2, 5) // Adjust for a better viewing angle
-  //   const planetPosition = new THREE.Vector3()
-  //   selectedPlanet.getWorldPosition(planetPosition)
-
-  //   camera.position.copy(planetPosition).add(offset)
-  //   controls.target.copy(planetPosition)
-  // }
-
+  
   planetObjects.forEach((planet, index) => {
-      planet.rotation.y += PLANETS[index].speed
-      // planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
-      // planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
+    planet.rotation.y += PLANETS[index].speed
+    
+    if (orbitalRing.orbitting) {
+      planet.position.x = planetObjects[0].position.x + Math.sin(planet.rotation.y) * PLANETS[index].distance
+      planet.position.z = planetObjects[0].position.z + Math.cos(planet.rotation.y) * PLANETS[index].distance
+    }
+
   })
 
   controls.update()

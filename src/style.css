@@ -58,6 +58,7 @@ body {
   text-justify: inter-word;
   padding: 0 10px;
   overflow: auto;
+  scrollbar-width: thin;
   /* text-align: justify; */
   text-justify: inter-word;
 
@@ -123,6 +124,24 @@ body {
   transform: translate(10px, -10px);
 }
 
+#tutorial-button {
+  color: white;
+  z-index: 99;
+  height: 30px;
+  position: absolute;
+  bottom: 20px;
+  left: 10px;
+  padding: 0 10px;
+
+  /* From https://css.glass */
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.tutorial-gif {
+  width: 80%;
+  object-fit: cover;
+}
 
 @keyframes zoomIn {
   0% { transform: scale(0.5); opacity: 0; }
