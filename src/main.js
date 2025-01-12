@@ -70,8 +70,23 @@ splashScreen.append(introText2)
 
 camera.position.set(0, 0, 100)
 
+const audioContext = THREE.AudioContext.getContext()
+
+// Audio
+const listener = new THREE.AudioListener()
+camera.add(listener)
+// create a global audio source
+const sound = new THREE.Audio(listener)
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader()
+audioLoader.load("./planet_sound_asset.ogg", function (buffer) {
+  sound.setBuffer(buffer)
+  sound.setLoop(true)
+  sound.setVolume(1)
+})
+
+let splashScreenActive = true
 splashScreen.addEventListener("click", () => {
-    const audioContext = THREE.AudioContext.getContext()
     if (audioContext.state === "suspended") {
       audioContext.resume().then(() => {
         console.log("AudioContext resumed")
@@ -91,27 +106,11 @@ splashScreen.addEventListener("click", () => {
     splashScreen.style.animation = "fadeOut 1.5s ease-out"
     setTimeout(() => {
       splashScreen.style.display = "none"
+      splashScreenActive = false
     }, 1500)
   })
 
 document.body.prepend(splashScreen)
-
-
-// let selectedPlanet = null
-// let isFollowing = false
-
-// Audio
-const listener = new THREE.AudioListener()
-camera.add(listener)
-// create a global audio source
-const sound = new THREE.Audio(listener)
-// load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader()
-audioLoader.load("./planet_sound_asset.ogg", function (buffer) {
-  sound.setBuffer(buffer)
-  sound.setLoop(true)
-  sound.setVolume(0.5)
-})
 
 const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.5})
 
@@ -148,6 +147,8 @@ for (const planet of PLANETS) {
 
 
       window.addEventListener('click', (e) => {
+        if (splashScreenActive) return
+
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
   
@@ -176,7 +177,7 @@ for (const planet of PLANETS) {
           orbitalRing.orbitting = false
           pane.refresh();
           
-          planetInfo(planet)
+          planetInfo(planet, sound)
           // document.getElementById("close-planet-card").hidden = false
           document.getElementById("close-planet-card").style.display = "flex"
           document.getElementById("planet-card-left").hidden = false
@@ -209,6 +210,11 @@ orbitRingsPane.addBinding(orbitalRing, "orbitting").on("change", (event) => {
     ring.visible != orbitalRing.orbitting
 })
 
+if (audioContext.state === "suspended") {
+  audioContext.resume().then(() => {
+    sound.play()
+  })
+}
 
 Card()
 
@@ -300,11 +306,14 @@ const renderLoop = () => {
   }
   
   planetObjects.forEach((planet, index) => {
+    // console.log(planet.name, planet.position)
     planet.rotation.y += PLANETS[index].speed
+
+    const sunPosition = planetObjects.find(p => p.name === 'Sun').position
     
     if (orbitalRing.orbitting) {
-      planet.position.x = planetObjects[0].position.x + Math.sin(planet.rotation.y) * PLANETS[index].distance
-      planet.position.z = planetObjects[0].position.z + Math.cos(planet.rotation.y) * PLANETS[index].distance
+      planet.position.x = sunPosition.x + Math.sin(planet.rotation.y) * PLANETS[index].distance
+      planet.position.z = sunPosition.z + Math.cos(planet.rotation.y) * PLANETS[index].distance
     }
 
   })

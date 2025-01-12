@@ -1,9 +1,18 @@
-export default (planet) => {
+export default (planet, sound) => {
     document.getElementById("planet-card-left-header").innerText = planet.name
     document.getElementById("planet-card-left-desc").innerText = planet.information.description
     document.getElementById("planet-card-right-image").src = `./image/${planet.name}.webp`
-    document.getElementById("planet-card-right-video").firstChild.src = `./video/${planet.name}.mp4`
+    const vid = document.getElementById("planet-card-right-video")
+    vid.firstChild.src = `./video/${planet.name}.mp4`
     document.getElementById("planet-card-right-video").load()
+
+    vid.addEventListener("play", () => {
+        sound.pause()
+    })
+
+    vid.addEventListener("pause", () => {
+        sound.play()
+    })
 
     document.getElementById("planet-card-left-fact").innerHTML = ""
 

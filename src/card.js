@@ -94,7 +94,6 @@ export default () => {
 
         tutorials.forEach(tut => {
             const tuts = tut.split("@")
-            console.log(tuts)
             const tutorialTitle = document.createElement("p")
             tutorialTitle.innerText = tuts[0]
             planetLeftTutorial.append(tutorialTitle)
