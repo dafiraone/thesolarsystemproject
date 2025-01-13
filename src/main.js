@@ -223,7 +223,6 @@ if (audioContext.state === "suspended") {
   })
 }
 
-Card()
 
 // Star Background (randomized)
 const starGeometry = new THREE.BufferGeometry()
@@ -245,6 +244,7 @@ const starMaterial = new THREE.PointsMaterial({ color: 0x888888, size: 0.5 })
 const stars = new THREE.Points(starGeometry, starMaterial)
 scene.add(stars)
 
+Card()
 
 const canvas = document.getElementById("threejs")
 const renderer = new THREE.WebGLRenderer({
@@ -282,16 +282,16 @@ let handled = false;
 document.addEventListener('keydown', (event) => {
   if (event.key === 'T' && event.shiftKey && !handled) {
     if (paneElement.style.display === 'none') {
-      paneElement.style.display = 'block'; // Show
+      paneElement.style.display = 'block'
     } else {
-      paneElement.style.display = 'none'; // Hide
+      paneElement.style.display = 'none'
     }
-    handled = true; // Prevent further triggering
+    handled = true
   }
 });
 
 document.addEventListener('keyup', () => {
-  handled = false; // Reset when keys are released
+  handled = false
 });
 
 
