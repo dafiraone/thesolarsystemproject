@@ -1,6 +1,6 @@
 export default {
-    root: "src/",
-    publicDir: "../public",
+    // root: "src/",
+    // publicDir: "../public",
     // base: "./"
     base: "/thesolarsystemproject/"
 }
