@@ -316,6 +316,9 @@ const renderLoop = () => {
     // console.log(planet.name, planet.position)
     planet.rotation.y += PLANETS[index].speed
 
+    console.log(planet.name)
+    console.log(planet.position)
+
     const sunPosition = planetObjects.find(p => p.name === 'Sun').position
     
     if (orbitalRing.orbitting) {
