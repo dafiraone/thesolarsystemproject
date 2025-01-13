@@ -123,12 +123,13 @@ const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, op
 
 const planetObjects = []
 const orbitRings = []
+
 for (const planet of PLANETS) {
-  new MTLLoader().load(`/${planet.name}/materials.mtl`, (materials) => {
+  new MTLLoader().load(`./${planet.name}/materials.mtl`, (materials) => {
     materials.preload()
 
     new OBJLoader().setMaterials(materials)
-        .load(`/${planet.name}/model.obj`, (object) => {
+        .load(`./${planet.name}/model.obj`, (object) => {
 
       object.position.x = planet.distance
       object.scale.setScalar(planet.scale)
@@ -313,14 +314,22 @@ const renderLoop = () => {
   }
   
   planetObjects.forEach((planet, index) => {
+    if (!planet) return
     // console.log(planet.name, planet.position)
     planet.rotation.y += PLANETS[index].speed
 
-    const sunPosition = planetObjects.find(p => p.name === 'Sun').position
+    const sun = planetObjects.find(p => p.name === 'Sun').position
+    // console.log(sun)
+
+    if (sun.x !== 0 && sun.y !== 0 && sun.z !==0) {
+      location.reload()
+      return false
+    }
+
     
     if (orbitalRing.orbitting) {
-      planet.position.x = sunPosition.x + Math.sin(planet.rotation.y) * PLANETS[index].distance
-      planet.position.z = sunPosition.z + Math.cos(planet.rotation.y) * PLANETS[index].distance
+      planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
+      planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
     }
 
   })

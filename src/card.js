@@ -9,7 +9,7 @@ export default () => {
 
     const cardRightImage = document.createElement("img")
     cardRightImage.id = "planet-card-right-image"
-    cardRightImage.src = "./Sun-image.webp"
+    cardRightImage.src = "/Sun-image.webp"
     cardRight.append(cardRightImage)
 
     const cardRightVideo = document.createElement("video")
@@ -19,7 +19,7 @@ export default () => {
     cardRightVideo.controls = true
     // cardRightVideo.autoplay = true
     const cardRightVideoSource = document.createElement("source")
-    cardRightVideoSource.src = "./Sun-video.mp4"
+    cardRightVideoSource.src = "/Sun-video.mp4"
     cardRightVideoSource.type = "video/mp4"
     cardRightVideo.append(cardRightVideoSource)
     cardRight.append(cardRightVideo)

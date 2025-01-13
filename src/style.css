@@ -12,7 +12,7 @@ body {
 
 @font-face {
   font-family: JetBrainsMono-Regular;
-  src: url("./JetBrainsMono-Regular.ttf");
+  src: url("/JetBrainsMono-Regular.ttf");
 }
 #splash-screen {
   font-family: JetBrainsMono-Regular;
