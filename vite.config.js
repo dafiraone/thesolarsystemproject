@@ -1,8 +1,8 @@
 import { defineConfig } from "vite"
 
 export default defineConfig({
-    // root: "src/",
-    // publicDir: "../public",
-    // base: "./"
+    // root: "./",
+    // publicDir: "./public",
+    // base: "./src"
     base: "/thesolarsystemproject"
 })
