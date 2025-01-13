@@ -53,6 +53,20 @@ let targetCameraPosition = new THREE.Vector3()
 let initialControlsTarget = new THREE.Vector3()
 let targetControlsTarget = new THREE.Vector3()
 
+const audioContext = THREE.AudioContext.getContext()
+
+// Audio
+const listener = new THREE.AudioListener()
+camera.add(listener)
+// create a global audio source
+const sound = new THREE.Audio(listener)
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader()
+audioLoader.load("./planet_sound_asset.ogg", function (buffer) {
+  sound.setBuffer(buffer)
+  sound.setLoop(true)
+  sound.setVolume(1)
+})
 
 // Splash Screen
 const splashScreen = document.createElement("div")
@@ -70,45 +84,38 @@ splashScreen.append(introText2)
 
 camera.position.set(0, 0, 100)
 
-const audioContext = THREE.AudioContext.getContext()
+let splashScreenActive = true;
+splashScreen.style.pointerEvents = "none"; // Disable clicks initially
 
-// Audio
-const listener = new THREE.AudioListener()
-camera.add(listener)
-// create a global audio source
-const sound = new THREE.Audio(listener)
-// load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader()
-audioLoader.load("./planet_sound_asset.ogg", function (buffer) {
-  sound.setBuffer(buffer)
-  sound.setLoop(true)
-  sound.setVolume(1)
-})
+// Enable clicks after 1.5 seconds
+setTimeout(() => {
+  splashScreen.style.pointerEvents = "auto"; // Enable clicks
+}, 1500);
 
-let splashScreenActive = true
 splashScreen.addEventListener("click", () => {
-    if (audioContext.state === "suspended") {
-      audioContext.resume().then(() => {
-        console.log("AudioContext resumed")
-      })
-    }
-    // Start animation to move camera closer to the scene
-    isAnimating = true
-    animationStartTime = clock.getElapsedTime()
-    initialCameraPosition.copy(camera.position)
-    targetCameraPosition.set(0, 0, 7) // Closer to planets
-    initialControlsTarget.copy(controls.target)
-    targetControlsTarget.set(0, 0, 0) // Center of the scene
-  
-    sound.play()
-  
-    // Trigger fade out and remove intro overlay after animation
-    splashScreen.style.animation = "fadeOut 1.5s ease-out"
-    setTimeout(() => {
-      splashScreen.style.display = "none"
-      splashScreenActive = false
-    }, 1500)
-  })
+  if (audioContext.state === "suspended") {
+    audioContext.resume().then(() => {
+      console.log("AudioContext resumed");
+    });
+  }
+  // Start animation to move camera closer to the scene
+  isAnimating = true;
+  animationStartTime = clock.getElapsedTime();
+  initialCameraPosition.copy(camera.position);
+  targetCameraPosition.set(0, 0, 7); // Closer to planets
+  initialControlsTarget.copy(controls.target);
+  targetControlsTarget.set(0, 0, 0); // Center of the scene
+
+  sound.play();
+
+  // Trigger fade out and remove intro overlay after animation
+  splashScreen.style.animation = "fadeOut 1.5s ease-out";
+  setTimeout(() => {
+    splashScreen.style.display = "none";
+    splashScreenActive = false;
+  }, 1500);
+});
+
 
 document.body.prepend(splashScreen)
 
