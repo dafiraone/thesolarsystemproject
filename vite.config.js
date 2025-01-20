@@ -3,9 +3,9 @@ import { defineConfig } from "vite"
 export default defineConfig({
     // root: "./",
     // publicDir: "./public",
-    base: "./",
+    // base: "./",
     // optimizeDeps: {
     //     include: ['three']
     // },
-    // base: "/thesolarsystemproject"
+    base: "/thesolarsystemproject"
 })

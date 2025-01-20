@@ -124,6 +124,14 @@ const ring = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, op
 const planetObjects = []
 const orbitRings = []
 
+function startScene() {
+  console.log("All planets loaded!")
+  splashScreen.style.pointerEvents = "auto"
+  renderLoop()
+}
+
+let loadedPlanets = 0
+
 for (const planet of PLANETS) {
   new MTLLoader().load(`./${planet.name}/materials.mtl`, (materials) => {
     materials.preload()
@@ -192,6 +200,12 @@ for (const planet of PLANETS) {
           document.getElementById("planet-card-right").hidden = false
         }
       })
+
+      loadedPlanets++
+
+      if (loadedPlanets === PLANETS.length) {
+        startScene()
+      }
     })
   })
 }
@@ -297,6 +311,8 @@ document.addEventListener('keyup', () => {
 
 
 const renderLoop = () => {
+  requestAnimationFrame(renderLoop)
+
   if (isAnimating) {
     const elapsedTime = clock.getElapsedTime() - animationStartTime
     const t = Math.min(elapsedTime / animationDuration, 1) // Normalized time [0, 1]
@@ -316,17 +332,17 @@ const renderLoop = () => {
   planetObjects.forEach((planet, index) => {
     if (!planet) return
     // console.log(planet.name, planet.position)
+    const sun = planetObjects.find(p => p.name === 'Sun').position
+    if (!sun) return
+
     planet.rotation.y += PLANETS[index].speed
 
-    const sun = planetObjects.find(p => p.name === 'Sun').position
-    // console.log(sun)
 
     if (sun.x !== 0 && sun.y !== 0 && sun.z !==0) {
       location.reload()
       return false
     }
 
-    
     if (orbitalRing.orbitting) {
       planet.position.x = Math.sin(planet.rotation.y) * PLANETS[index].distance
       planet.position.z = Math.cos(planet.rotation.y) * PLANETS[index].distance
@@ -337,4 +353,4 @@ const renderLoop = () => {
   controls.update()
   renderer.render(scene, camera)
 }
-renderer.setAnimationLoop(renderLoop)
+// renderer.setAnimationLoop(renderLoop)
